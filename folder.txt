@@ -1,0 +1,46 @@
+exam-system/
+│
+├── backend/
+│   ├── server.js
+│   ├── config/
+│   │   └── db.js
+│   ├── models/
+│   │   ├── Exam.js
+│   │   ├── Question.js
+│   │   └── Response.js
+│   ├── routes/
+│   │   ├── examRoutes.js
+│   │   └── responseRoutes.js
+│   └── controllers/
+│       ├── examController.js
+│       └── responseController.js
+│
+├── teacher-frontend/
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   └── src/
+│       ├── App.jsx
+│       ├── main.jsx
+│       ├── pages/
+│       │   ├── AddExam.jsx
+│       │   ├── AddQuestion.jsx
+│       │   └── ExamList.jsx
+│       └── api.js
+│
+└── student-frontend/
+    ├── index.html
+    ├── vite.config.js
+    ├── tailwind.config.js
+    ├── postcss.config.js
+    └── src/
+        ├── App.jsx
+        ├── main.jsx
+        ├── pages/
+        │   ├── ExamList.jsx
+        │   ├── ExamPage.jsx
+        │   └── ResultPage.jsx
+        ├── components/
+        │   └── QuestionCard.jsx
+        └── api.js
