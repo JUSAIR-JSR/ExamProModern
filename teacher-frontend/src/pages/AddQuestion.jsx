@@ -146,16 +146,18 @@ for (const [k, v] of formData.entries()) console.log(k, v);
       {/* ✅ Marks + Answer */}
       <div className="flex gap-2 mb-3 flex-wrap">
         <select
-          className="border p-2 rounded"
+          className="border p-2 rounded flex-1"
           value={correctAnswer}
           onChange={(e) => setCorrectAnswer(Number(e.target.value))}
         >
-          {[0, 1, 2, 3].map((i) => (
+          {options.map((opt, i) => (
             <option key={i} value={i}>
-              Correct: Option {i + 1}
+              Option {i + 1} — {opt || "(empty)"}
             </option>
           ))}
         </select>
+
+
 
         <input
           type="number"
@@ -195,77 +197,91 @@ for (const [k, v] of formData.entries()) console.log(k, v);
         )}
       </div>
 
-      {/* ✅ Existing Questions List */}
-      <div className="mt-8">
-        <h3 className="text-lg font-bold mb-3">Existing Questions</h3>
+     {/* ✅ Existing Questions List */}
+<div className="mt-8">
+  <h3 className="text-lg font-bold mb-3">Existing Questions</h3>
 
-        {questions.length === 0 ? (
-          <p>No questions yet.</p>
-        ) : (
-          <ul className="space-y-3">
-            {questions.map((q, i) => (
-              <li
-                key={q._id}
-                className="border rounded p-3 bg-gray-50 flex justify-between items-start"
-              >
-                <div className="flex-1">
-                  {/* ✅ Show image if available */}
-              {/* ✅ Show image securely with hover zoom */}
-              {q.image ? (
-                <div className="relative w-40 overflow-hidden rounded-lg border group">
-                  <img
-                    src={q.image}
-                    alt="question"
-                    className="transition-transform duration-300 ease-in-out group-hover:scale-150 group-focus:scale-150"
-                    tabIndex={0} // enables focus zoom via keyboard
-                  />
-                </div>
-              ) : (
-                <p className="text-gray-400 text-sm italic">(No image)</p>
-              )}
+  {questions.length === 0 ? (
+    <p>No questions yet.</p>
+  ) : (
+    <ul className="space-y-3">
+      {questions.map((q, i) => (
+        <li
+          key={q._id}
+          className="border rounded p-3 bg-gray-50 flex justify-between items-start"
+        >
+          <div className="flex-1">
+            {/* ✅ Show image securely with hover zoom */}
+            {q.image ? (
+              <div className="relative w-40 overflow-hidden rounded-lg border group mb-3">
+                <img
+                  src={q.image}
+                  alt="question"
+                  className="transition-transform duration-300 ease-in-out group-hover:scale-150 group-focus:scale-150"
+                  tabIndex={0}
+                />
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm italic">(No image)</p>
+            )}
 
+            {/* ✅ Question text */}
+            <p className="font-semibold mb-1 whitespace-pre-line">
+              {i + 1}. {q.text}
+            </p>
 
+            {/* ✅ Marks info */}
+            <p className="text-sm text-gray-600 mb-1">
+              Marks: <span className="font-medium text-green-700">+{q.marks}</span> | Neg:{" "}
+              <span className="font-medium text-red-700">-{q.negativeMarks}</span>
+            </p>
 
+            {/* ✅ Options list */}
+            <ul className="list-disc pl-6 text-sm mb-2">
+              {q.options.map((opt, idx) => (
+                <li
+                  key={idx}
+                  className={`${
+                    idx === q.correctAnswer
+                      ? "text-green-700 font-semibold"
+                      : "text-gray-700"
+                  }`}
+                >
+                  {opt}
+                </li>
+              ))}
+            </ul>
 
-                  <p className="font-semibold mb-1 whitespace-pre-line">
-                    {i + 1}. {q.text}
-                  </p>
+            {/* ✅ Correct answer indicator */}
+            <p className="text-sm mt-1 text-green-700 font-medium">
+              ✅ Correct Answer: Option {q.correctAnswer + 1} —{" "}
+              <span className="italic">
+                {q.options[q.correctAnswer] || "(undefined)"}
+              </span>
+            </p>
+          </div>
 
-                  <ul className="list-disc pl-6 text-sm">
-                    {q.options.map((opt, idx) => (
-                      <li
-                        key={idx}
-                        className={
-                          idx === q.correctAnswer
-                            ? "text-green-700 font-semibold"
-                            : "text-gray-700"
-                        }
-                      >
-                        {opt}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+          {/* Edit / Delete buttons */}
+          <div className="flex flex-col gap-2 ml-4">
+            <button
+              onClick={() => handleEdit(q)}
+              className="bg-yellow-500 text-white px-3 py-1 rounded"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleDelete(q._id)}
+              className="bg-red-500 text-white px-3 py-1 rounded"
+            >
+              Delete
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
-                <div className="flex flex-col gap-2 ml-4">
-                  <button
-                    onClick={() => handleEdit(q)}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(q._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
     </div>
   );
 }
