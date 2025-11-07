@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://exampromodern-backend-pj8p.onrender.com/api",
 });
 
 // ✅ Automatically include token if logged in
