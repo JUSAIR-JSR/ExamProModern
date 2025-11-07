@@ -4,43 +4,91 @@ import Question from "../models/Question.js";
 // ✅ Get all exams
 export const getExams = async (req, res) => {
   try {
-    const exams = await Exam.find();
+    let exams;
+
+    if (req.user.role === "teacher") {
+      // Teacher sees only their exams
+      exams = await Exam.find({ teacher: req.user.id });
+    } else if (req.user.role === "student") {
+      // Student sees all exams available
+      exams = await Exam.find().select("-questions"); // optional: hide questions list
+    } else if (req.user.role === "admin") {
+      // Admin sees all exams
+      exams = await Exam.find();
+    } else {
+      return res.status(403).json({ message: "Unauthorized role" });
+    }
+
     res.json(exams);
   } catch (err) {
+    console.error("Error fetching exams:", err);
     res.status(500).json({ message: "Error fetching exams" });
   }
 };
 
+
+
 // ✅ Add a new exam
 export const addExam = async (req, res) => {
   try {
-    const exam = await Exam.create(req.body);
+    console.log("User from token:", req.user); // 👈 debug
+    const { title, duration, totalMarks } = req.body;
+
+    const exam = await Exam.create({
+      title,
+      duration,
+      totalMarks,
+      teacher: req.user.id,
+    });
+
     res.status(201).json(exam);
-  } catch (err) {
-    res.status(500).json({ message: "Error creating exam" });
+  } catch (error) {
+    console.error("Add Exam Error:", error);
+    res.status(500).json({ message: "Failed to create exam", error: error.message });
   }
 };
+
+
 
 // ✅ Delete exam + related questions
 export const deleteExam = async (req, res) => {
   try {
-    await Exam.findByIdAndDelete(req.params.id);
-    await Question.deleteMany({ examId: req.params.id });
+    const exam = await Exam.findById(req.params.id);
+
+    if (!exam) return res.status(404).json({ message: "Exam not found" });
+
+    // ✅ Prevent deleting another teacher’s exam
+    if (req.user.role === "teacher" && exam.teacher.toString() !== req.user.id) {
+      return res.status(403).json({ message: "You cannot delete another teacher's exam" });
+    }
+
+    await exam.deleteOne();
     res.json({ message: "Exam deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: "Error deleting exam" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete exam" });
   }
 };
+
 
 // ✅ Get all questions of a specific exam
 export const getQuestions = async (req, res) => {
   try {
+    const exam = await Exam.findById(req.params.id);
+
+    if (!exam) return res.status(404).json({ message: "Exam not found" });
+
+    // ✅ Restrict teacher access
+    if (req.user.role === "teacher" && exam.teacher.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Access denied to another teacher's exam" });
+    }
+
     const questions = await Question.find({ examId: req.params.id });
     res.json(questions);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching questions" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch questions" });
   }
 };
+
 
 // ✅ Add new question (supports Cloudinary image)
 export const addQuestion = async (req, res) => {

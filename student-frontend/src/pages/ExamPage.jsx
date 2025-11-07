@@ -75,7 +75,7 @@ export default function ExamPage() {
   const submitExam = async () => {
     const res = await API.post("/responses/submit", {
       examId: id,
-      answers,
+      answers
     });
     setSubmitted(true);
     navigate("/result", { state: { result: res.data } });

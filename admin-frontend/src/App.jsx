@@ -1,54 +1,56 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import AdminLogin from "./pages/AdminLogin";
+import Dashboard from "./pages/Dashboard";
+import TeacherList from "./pages/TeacherList";
+import StudentList from "./pages/StudentList";
 import ExamList from "./pages/ExamList";
-import ExamPage from "./pages/ExamPage";
-import ResultPage from "./pages/ResultPage";
-import StudentLogin from "./pages/StudentLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
-import StudentRegister from "./pages/StudentRegister";
-import Profile from "./pages/Profile"; // ✅ import added
+import Navbar from "./components/Navbar";
 
 export default function App() {
+  // Check login state — if a token exists in localStorage
+  const isLoggedIn = !!localStorage.getItem("token");
+
   return (
     <BrowserRouter>
-      <Navbar />
+      {/* ✅ Show Navbar only if logged in */}
+      {isLoggedIn && <Navbar />}
 
       <div className="p-6">
         <Routes>
-          <Route path="/login" element={<StudentLogin />} />
-          <Route path="/register" element={<StudentRegister />} />
+          {/* 🔑 Public Route */}
+          <Route path="/" element={<AdminLogin />} />
 
-          {/* Protected Routes */}
+          {/* 🔒 Protected Routes */}
           <Route
-            path="/"
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/teachers"
+            element={
+              <ProtectedRoute>
+                <TeacherList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/students"
+            element={
+              <ProtectedRoute>
+                <StudentList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exams"
             element={
               <ProtectedRoute>
                 <ExamList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/exam/:id"
-            element={
-              <ProtectedRoute>
-                <ExamPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/result"
-            element={
-              <ProtectedRoute>
-                <ResultPage />
-              </ProtectedRoute>
-            }
-          />
-          {/* ✅ New Profile Route */}
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
               </ProtectedRoute>
             }
           />

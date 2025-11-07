@@ -11,9 +11,11 @@ import {
   updateQuestion,
   deleteQuestion,
 } from "../controllers/examController.js";
+import { protect, requireRole } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// 🧠 Cloudinary storage config
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => ({
@@ -25,12 +27,27 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-router.get("/", getExams);
-router.post("/", addExam);
-router.delete("/:id", deleteExam);
-router.get("/:id/questions", getQuestions);
-router.post("/questions", upload.single("image"), addQuestion);
-router.put("/questions/:id", upload.single("image"), updateQuestion);
-router.delete("/questions/:id", deleteQuestion);
+/* -------------------------------
+   🔐 ROUTES WITH ROLE PROTECTION
+--------------------------------*/
+
+// ✅ Anyone logged in (teacher/student/admin) can view all exams
+router.get("/", protect, getExams);
+
+// ✅ Only teachers can create exams
+router.post("/", protect, requireRole(["teacher"]), addExam);
+
+// ✅ Only teachers or admin can delete an exam
+router.delete("/:id", protect, requireRole(["teacher", "admin"]), deleteExam);
+
+// ✅ Any authenticated user (teacher/student/admin) can view questions of an exam
+router.get("/:id/questions", protect, getQuestions);
+
+// ✅ Only teachers can add or edit questions
+router.post("/questions", protect, requireRole(["teacher"]), upload.single("image"), addQuestion);
+router.put("/questions/:id", protect, requireRole(["teacher"]), upload.single("image"), updateQuestion);
+
+// ✅ Only teachers or admin can delete a question
+router.delete("/questions/:id", protect, requireRole(["teacher", "admin"]), deleteQuestion);
 
 export default router;

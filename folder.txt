@@ -44,3 +44,24 @@ exam-system/
         ├── components/
         │   └── QuestionCard.jsx
         └── api.js
+
+exam-system/
+│
+├── admin-frontend/
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   └── src/
+│       ├── App.jsx
+│       ├── main.jsx
+│       ├── api.js
+│       ├── pages/
+│       │   ├── AdminLogin.jsx
+│       │   ├── Dashboard.jsx
+│       │   ├── TeacherList.jsx
+│       │   ├── StudentList.jsx
+│       │   └── ExamList.jsx
+│       └── components/
+│           ├── Navbar.jsx
+│           └── ProtectedRoute.jsx
