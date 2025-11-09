@@ -1,41 +1,38 @@
-// ✅ SafeStorage with memory fallback for browsers that block all storage (like Safari Private Mode)
+// ✅ SafeStorage v2 — Silent, stable fallback for all browsers (even Safari private mode)
 let memoryStore = {};
+
+function canUseStorage() {
+  try {
+    const testKey = "__storage_test__";
+    localStorage.setItem(testKey, "1");
+    localStorage.removeItem(testKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const storageAvailable = canUseStorage();
 
 export const safeStorage = {
   getItem(key) {
-    try {
+    if (storageAvailable) {
       return localStorage.getItem(key);
-    } catch (err) {
-      console.warn("⚠️ localStorage.getItem blocked:", err.message);
-      try {
-        return sessionStorage.getItem(key);
-      } catch {
-        return memoryStore[key] || null;
-      }
     }
+    return memoryStore[key] || null;
   },
   setItem(key, value) {
-    try {
+    if (storageAvailable) {
       localStorage.setItem(key, value);
-    } catch (err) {
-      console.warn("⚠️ localStorage.setItem blocked:", err.message);
-      try {
-        sessionStorage.setItem(key, value);
-      } catch {
-        memoryStore[key] = value; // ✅ fallback in memory
-      }
+    } else {
+      memoryStore[key] = value;
     }
   },
   removeItem(key) {
-    try {
+    if (storageAvailable) {
       localStorage.removeItem(key);
-    } catch (err) {
-      console.warn("⚠️ localStorage.removeItem blocked:", err.message);
-      try {
-        sessionStorage.removeItem(key);
-      } catch {
-        delete memoryStore[key];
-      }
+    } else {
+      delete memoryStore[key];
     }
   },
 };
