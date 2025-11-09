@@ -95,12 +95,11 @@ export default function AddQuestion() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-10 px-4">
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
   className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 sm:p-8 md:p-10 border border-green-100"
-/>
-
+      >
         <h2 className="text-3xl font-bold mb-6 text-center text-blue-700">
           🧠 Manage Questions — {exam?.title || "Loading..."}
         </h2>
