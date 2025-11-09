@@ -95,11 +95,12 @@ export default function AddQuestion() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-10 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl p-6 border border-green-100"
-      >
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 sm:p-8 md:p-10 border border-green-100"
+/>
+
         <h2 className="text-3xl font-bold mb-6 text-center text-blue-700">
           🧠 Manage Questions — {exam?.title || "Loading..."}
         </h2>
@@ -135,18 +136,16 @@ export default function AddQuestion() {
           </div>
 
           {options.map((opt, i) => (
-            <input
-              key={i}
-              type="text"
-              placeholder={`Option ${i + 1}`}
-              value={opt}
-              onChange={(e) =>
-                setOptions(
-                  options.map((o, idx) => (idx === i ? e.target.value : o))
-                )
-              }
-              className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 transition"
-            />
+<input
+  type="text"
+  placeholder={`Option ${i + 1}`}
+  value={opt}
+  onChange={(e) =>
+    setOptions(options.map((o, idx) => (idx === i ? e.target.value : o)))
+  }
+  className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-400 transition"
+/>
+
           ))}
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">

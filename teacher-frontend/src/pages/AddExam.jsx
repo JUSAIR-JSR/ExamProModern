@@ -60,12 +60,13 @@ export default function AddExam() {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-white to-green-50 px-4 py-10">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-lg bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-green-100"
-      >
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
+  className="w-full max-w-2xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 md:p-10 border border-green-100 mx-auto"
+>
+
         {/* Header */}
         <div className="flex items-center gap-3 mb-6 border-b pb-3 border-gray-200">
           <BookOpen
@@ -167,23 +168,20 @@ export default function AddExam() {
 
           {/* Save Button */}
           <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleSave}
-            disabled={loading}
-            className={`w-full mt-5 py-2 text-white font-semibold rounded-lg transition ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : id
-                ? "bg-yellow-500 hover:bg-yellow-600"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-          >
-            {loading
-              ? "Saving..."
-              : id
-              ? "Update Exam ✏️"
-              : "Save Exam 💾"}
-          </motion.button>
+  whileTap={{ scale: 0.97 }}
+  onClick={handleSave}
+  disabled={loading}
+  className={`w-full mt-6 py-3 text-white font-semibold rounded-lg text-lg transition ${
+    loading
+      ? "bg-gray-400 cursor-not-allowed"
+      : id
+      ? "bg-yellow-500 hover:bg-yellow-600"
+      : "bg-blue-600 hover:bg-blue-700"
+  }`}
+>
+  {loading ? "Saving..." : id ? "Update Exam" : "Save Exam"}
+</motion.button>
+
         </div>
       </motion.div>
     </div>
