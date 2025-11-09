@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { LogOut, UserCircle, GraduationCap, Menu, X } from "lucide-react";
-import { safeStorage } from "../safeStorage";
+import { safeStorage } from "../utils/safeStorage";
 
 export default function Navbar() {
   const navigate = useNavigate();

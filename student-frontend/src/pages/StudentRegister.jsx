@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { User, Mail, Lock, UserPlus, GraduationCap } from "lucide-react";
 import API from "../api";
-import { safeStorage } from "../safeStorage"; // ✅ Add this import
+import { safeStorage } from "../utils/safeStorage"; // ✅ Add this import
 
 export default function StudentRegister() {
   const [form, setForm] = useState({

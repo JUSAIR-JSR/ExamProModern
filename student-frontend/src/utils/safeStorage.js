@@ -1,4 +1,5 @@
-let memoryStore = {}; // fallback storage
+// ✅ SafeStorage with memory fallback for browsers that block all storage (like Safari Private Mode)
+let memoryStore = {};
 
 export const safeStorage = {
   getItem(key) {
@@ -21,7 +22,7 @@ export const safeStorage = {
       try {
         sessionStorage.setItem(key, value);
       } catch {
-        memoryStore[key] = value; // 💾 store in memory fallback
+        memoryStore[key] = value; // ✅ fallback in memory
       }
     }
   },

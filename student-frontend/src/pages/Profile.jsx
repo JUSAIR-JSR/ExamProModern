@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { BarChart3, Target, Award, UserCircle } from "lucide-react";
 import API from "../api";
+import { safeStorage } from "../utils/safeStorage";
+
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -14,7 +16,7 @@ export default function Profile() {
   });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = safeStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
     fetchResults();
   }, []);
