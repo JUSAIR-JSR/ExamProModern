@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, LogIn } from "lucide-react";
 import API from "../api";
+import { safeStorage } from "../safeStorage"; // ✅ import added
 
 export default function TeacherLogin() {
   const [email, setEmail] = useState("");
@@ -21,8 +22,8 @@ export default function TeacherLogin() {
         return;
       }
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data));
+      safeStorage.setItem("token", res.data.token);
+      safeStorage.setItem("user", JSON.stringify(res.data));
       navigate("/");
     } catch (err) {
       alert(err.response?.data?.message || "Invalid credentials");

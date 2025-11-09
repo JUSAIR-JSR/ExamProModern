@@ -1,14 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LogOut, BookOpen, PlusCircle, Home, GraduationCap } from "lucide-react";
+import { safeStorage } from "./safeStorage"; // ✅ import added
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(safeStorage.getItem("user") || "{}");
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    safeStorage.removeItem("token");
+    safeStorage.removeItem("user");
     navigate("/login");
   };
 
