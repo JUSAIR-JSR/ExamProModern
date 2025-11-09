@@ -1,34 +1,34 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ExamList from "./pages/ExamList";
 import AddExam from "./pages/AddExam";
 import AddQuestion from "./pages/AddQuestion";
 import TeacherLogin from "./pages/TeacherLogin";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useState, useEffect } from "react";
-import { safeStorage } from "./safeStorage"; // ✅ import added
 
-export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!safeStorage.getItem("token"));
+function Layout({ children }) {
+  const location = useLocation();
 
-  // Update when login or logout happens
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setIsLoggedIn(!!safeStorage.getItem("token"));
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  // ✅ Hide Navbar only on the login page
+  const hideNavbar = location.pathname === "/login";
 
   return (
-    <BrowserRouter>
-      {isLoggedIn && <Navbar />}
+    <>
+      {!hideNavbar && <Navbar />}
+      <div className="p-8">{children}</div>
+    </>
+  );
+}
 
-      <div className="p-8">
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Layout>
         <Routes>
+          {/* 🔐 Login route */}
           <Route path="/login" element={<TeacherLogin />} />
 
+          {/* 🔐 Protected routes */}
           <Route
             path="/"
             element={
@@ -62,7 +62,7 @@ export default function App() {
             }
           />
         </Routes>
-      </div>
+      </Layout>
     </BrowserRouter>
   );
 }
