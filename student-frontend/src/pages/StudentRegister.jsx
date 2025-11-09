@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { User, Mail, Lock, UserPlus, GraduationCap } from "lucide-react";
 import API from "../api";
 
 export default function StudentRegister() {
@@ -19,15 +21,11 @@ export default function StudentRegister() {
     e.preventDefault();
     setLoading(true);
     try {
-      // ✅ Use correct backend route
       const res = await API.post("/auth/register/student", form);
-
-      // ✅ Save token and user info locally
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data));
-
       alert("🎉 Registration successful!");
-      navigate("/"); // redirect to student dashboard
+      navigate("/");
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     } finally {
@@ -36,62 +34,102 @@ export default function StudentRegister() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-green-50">
-      <form
-        onSubmit={handleRegister}
-        className="bg-white p-6 rounded-xl shadow-md w-96 border border-gray-100"
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-white to-green-50">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[90%] sm:w-96"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center text-green-700">
-          Student Registration
-        </h2>
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-2">
+            <GraduationCap className="text-green-600" size={48} />
+          </div>
+          <h2 className="text-3xl font-bold text-green-700 mb-1">
+            Student Registration
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Join and start your learning journey
+          </p>
+        </div>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          className="border p-2 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
-          value={form.name}
-          onChange={handleChange}
-          required
-        />
+        {/* Registration Form */}
+        <form onSubmit={handleRegister} className="space-y-4">
+          {/* Name */}
+          <div className="relative">
+            <User size={20} className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none transition"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="border p-2 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
+          {/* Email */}
+          <div className="relative">
+            <Mail size={20} className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none transition"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="border p-2 w-full mb-4 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+          {/* Password */}
+          <div className="relative">
+            <Lock size={20} className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none transition"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`${
-            loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
-          } text-white w-full py-2 rounded transition`}
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
+          {/* Submit Button */}
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            type="submit"
+            disabled={loading}
+            className={`w-full font-semibold py-2 rounded-lg text-white transition ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
+          >
+            {loading ? "Registering..." : "Register"}
+          </motion.button>
+        </form>
 
-        <p className="mt-3 text-sm text-center">
+        {/* Login Redirect */}
+        <p className="mt-5 text-center text-sm text-gray-700">
           Already have an account?{" "}
-          <Link to="/login" className="text-green-600 hover:underline">
+          <Link
+            to="/login"
+            className="text-green-600 font-medium hover:underline"
+          >
             Login here
           </Link>
         </p>
-      </form>
+
+        {/* Footer */}
+        <div className="mt-6 text-center text-xs text-gray-400">
+          <UserPlus size={14} className="inline mr-1 text-gray-400" />
+          Secure Student Registration © {new Date().getFullYear()}
+        </div>
+      </motion.div>
     </div>
   );
 }
