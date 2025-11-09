@@ -1,3 +1,5 @@
+let memoryStore = {}; // fallback storage
+
 export const safeStorage = {
   getItem(key) {
     try {
@@ -7,7 +9,7 @@ export const safeStorage = {
       try {
         return sessionStorage.getItem(key);
       } catch {
-        return null;
+        return memoryStore[key] || null;
       }
     }
   },
@@ -19,7 +21,7 @@ export const safeStorage = {
       try {
         sessionStorage.setItem(key, value);
       } catch {
-        // no-op
+        memoryStore[key] = value; // 💾 store in memory fallback
       }
     }
   },
@@ -31,7 +33,7 @@ export const safeStorage = {
       try {
         sessionStorage.removeItem(key);
       } catch {
-        // no-op
+        delete memoryStore[key];
       }
     }
   },
