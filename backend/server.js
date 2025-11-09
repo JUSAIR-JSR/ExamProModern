@@ -14,35 +14,48 @@ dotenv.config();
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// ✅ Connect to MongoDB
 connectDB();
 
-// ✅ Secure and specific CORS setup
+// ✅ Explicit CORS setup
+const allowedOrigins = [
+  "https://exampromodern-student.onrender.com",
+  "https://exampromodern-teacher.onrender.com",
+  "https://exampromodern-admin.onrender.com",
+  "https://exampromodern-backend-pj8p.onrender.com",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://exampromodern-admin.onrender.com",
-      "https://exampromodern-teacher.onrender.com",
-      "https://exampromodern-student.onrender.com",
-      "http://localhost:5173", // for local testing
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("❌ Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+    ],
   })
 );
+app.options("*", cors()); // ✅ handle preflight
 
-// ✅ Middleware
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/exams", examRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/responses", responseRoutes);
 
-// ✅ Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
-  console.log(`✅ Server running on port ${PORT}`)
+  console.log(`✅ Server running at http://localhost:${PORT}`)
 );
