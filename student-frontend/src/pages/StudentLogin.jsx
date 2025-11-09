@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LogIn, Mail, Lock, GraduationCap } from "lucide-react";
 import API from "../api";
+import { safeStorage } from "../safeStorage"; // ✅ Add this import
 
 export default function StudentLogin() {
   const [email, setEmail] = useState("");
@@ -20,8 +21,11 @@ export default function StudentLogin() {
         setLoading(false);
         return;
       }
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data));
+
+      // ✅ Safe localStorage access
+      safeStorage.setItem("token", res.data.token);
+      safeStorage.setItem("user", JSON.stringify(res.data));
+
       navigate("/");
     } catch (err) {
       alert("Invalid credentials. Please try again.");
@@ -38,7 +42,6 @@ export default function StudentLogin() {
         transition={{ duration: 0.6 }}
         className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[90%] sm:w-96"
       >
-        {/* Logo and Title */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-2">
             <GraduationCap className="text-green-600" size={48} />
@@ -51,13 +54,9 @@ export default function StudentLogin() {
           </p>
         </div>
 
-        {/* Login Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="relative">
-            <Mail
-              size={20}
-              className="absolute left-3 top-3 text-gray-400"
-            />
+            <Mail size={20} className="absolute left-3 top-3 text-gray-400" />
             <input
               type="email"
               placeholder="Email"
@@ -69,10 +68,7 @@ export default function StudentLogin() {
           </div>
 
           <div className="relative">
-            <Lock
-              size={20}
-              className="absolute left-3 top-3 text-gray-400"
-            />
+            <Lock size={20} className="absolute left-3 top-3 text-gray-400" />
             <input
               type="password"
               placeholder="Password"
@@ -93,7 +89,6 @@ export default function StudentLogin() {
           </motion.button>
         </form>
 
-        {/* Register Link */}
         <p className="mt-5 text-center text-sm text-gray-700">
           Don’t have an account?{" "}
           <Link
@@ -104,7 +99,6 @@ export default function StudentLogin() {
           </Link>
         </p>
 
-        {/* Footer */}
         <div className="mt-6 text-center text-xs text-gray-400">
           <LogIn size={14} className="inline mr-1 text-gray-400" />
           Secure Student Portal © {new Date().getFullYear()}

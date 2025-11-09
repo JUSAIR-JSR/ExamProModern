@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { User, Mail, Lock, UserPlus, GraduationCap } from "lucide-react";
 import API from "../api";
+import { safeStorage } from "../safeStorage"; // ✅ Add this import
 
 export default function StudentRegister() {
   const [form, setForm] = useState({
@@ -22,8 +23,11 @@ export default function StudentRegister() {
     setLoading(true);
     try {
       const res = await API.post("/auth/register/student", form);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data));
+
+      // ✅ Safe storage
+      safeStorage.setItem("token", res.data.token);
+      safeStorage.setItem("user", JSON.stringify(res.data));
+
       alert("🎉 Registration successful!");
       navigate("/");
     } catch (err) {
@@ -41,7 +45,6 @@ export default function StudentRegister() {
         transition={{ duration: 0.6 }}
         className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[90%] sm:w-96"
       >
-        {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-2">
             <GraduationCap className="text-green-600" size={48} />
@@ -54,9 +57,7 @@ export default function StudentRegister() {
           </p>
         </div>
 
-        {/* Registration Form */}
         <form onSubmit={handleRegister} className="space-y-4">
-          {/* Name */}
           <div className="relative">
             <User size={20} className="absolute left-3 top-3 text-gray-400" />
             <input
@@ -70,7 +71,6 @@ export default function StudentRegister() {
             />
           </div>
 
-          {/* Email */}
           <div className="relative">
             <Mail size={20} className="absolute left-3 top-3 text-gray-400" />
             <input
@@ -84,7 +84,6 @@ export default function StudentRegister() {
             />
           </div>
 
-          {/* Password */}
           <div className="relative">
             <Lock size={20} className="absolute left-3 top-3 text-gray-400" />
             <input
@@ -98,7 +97,6 @@ export default function StudentRegister() {
             />
           </div>
 
-          {/* Submit Button */}
           <motion.button
             whileTap={{ scale: 0.97 }}
             type="submit"
@@ -113,7 +111,6 @@ export default function StudentRegister() {
           </motion.button>
         </form>
 
-        {/* Login Redirect */}
         <p className="mt-5 text-center text-sm text-gray-700">
           Already have an account?{" "}
           <Link
@@ -124,7 +121,6 @@ export default function StudentRegister() {
           </Link>
         </p>
 
-        {/* Footer */}
         <div className="mt-6 text-center text-xs text-gray-400">
           <UserPlus size={14} className="inline mr-1 text-gray-400" />
           Secure Student Registration © {new Date().getFullYear()}
