@@ -6,14 +6,15 @@ import TeacherLogin from "./pages/TeacherLogin";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useState, useEffect } from "react";
+import { safeStorage } from "./safeStorage"; // ✅ import added
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [isLoggedIn, setIsLoggedIn] = useState(!!safeStorage.getItem("token"));
 
   // Update when login or logout happens
   useEffect(() => {
     const handleStorageChange = () => {
-      setIsLoggedIn(!!localStorage.getItem("token"));
+      setIsLoggedIn(!!safeStorage.getItem("token"));
     };
 
     window.addEventListener("storage", handleStorageChange);

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { safeStorage } from "./safeStorage"; // ✅ import added
+import { safeStorage } from "../safeStorage"; // ✅ import added
 export default function ProtectedRoute({ children }) {
   const token = safeStorage.getItem("token");
   const user = JSON.parse(safeStorage.getItem("user") || "{}");

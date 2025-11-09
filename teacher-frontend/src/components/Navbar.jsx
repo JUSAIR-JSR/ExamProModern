@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LogOut, BookOpen, PlusCircle, Home, GraduationCap } from "lucide-react";
-import { safeStorage } from "./safeStorage"; // ✅ import added
+import { safeStorage } from "../safeStorage"; // ✅ import added
 
 export default function Navbar() {
   const navigate = useNavigate();
