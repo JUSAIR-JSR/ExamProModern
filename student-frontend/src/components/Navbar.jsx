@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { LogOut, UserCircle, GraduationCap, Menu, X } from "lucide-react";
+import { safeStorage } from "../safeStorage";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -10,14 +11,20 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const storedUser = safeStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        console.warn("⚠️ Invalid user data in storage.");
+      }
+    }
   }, []);
 
   const handleLogout = () => {
     if (confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      safeStorage.removeItem("token");
+      safeStorage.removeItem("user");
       navigate("/login");
     }
   };
