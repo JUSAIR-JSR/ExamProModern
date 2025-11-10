@@ -223,7 +223,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 lg:hidden"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 lg:hidden "
               onClick={() => setMobileMenuOpen(false)}
             />
             
@@ -233,7 +233,7 @@ export default function Navbar() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0 }}
               transition={{ type: "spring", damping: 25 }}
-              className="fixed top-0 right-0 h-full w-80 max-w-full bg-gradient-to-b from-slate-900 to-indigo-900 shadow-2xl border-l border-white/10 z-[100] lg:hidden"
+              className="fixed top-0 right-0 h-full w-80 max-w-full bg-gradient-to-b from-slate-900 to-indigo-900 shadow-2xl border-l border-white/10 z-[100] lg:hidden "
             >
               {/* Mobile Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
@@ -249,20 +249,20 @@ export default function Navbar() {
               </div>
 
               {/* User Info */}
-              <div className="p-6 border-b border-white/10">
+              <div className="p-6 border-b border-white/10 bg-blue-100">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
                     <User size={20} className="text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-white">{user.name || "Teacher"}</p>
+                    <p className="font-semibold text-blue-600">{user.name || "Teacher"}</p>
                     <p className="text-sm text-blue-200">Educator</p>
                   </div>
                 </div>
               </div>
 
               {/* Mobile Menu Items */}
-              <div className="p-4 space-y-2">
+              <div className="p-4 space-y-2 bg-blue-50">
                 {menuItems.map((item, index) => {
                   const Icon = item.icon;
                   return (
@@ -283,7 +283,7 @@ export default function Navbar() {
                         >
                           <Icon size={20} />
                         </motion.div>
-                        <span className="font-medium text-white/90 group-hover:text-white">
+                        <span className="font-medium text-blue-500  group-hover:text-white">
                           {item.label}
                         </span>
                       </Link>
@@ -300,7 +300,7 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                     handleLogout();
                   }}
-                  className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200 mt-4"
+                  className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-red-500/20 text-red-400 bg-red-200 hover:text-red-300 transition-all duration-200 mt-4"
                 >
                   <LogOut size={20} />
                   <span className="font-medium">Sign Out</span>
