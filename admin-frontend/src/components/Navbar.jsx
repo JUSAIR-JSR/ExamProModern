@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { safeStorage } from "../safeStorage";
+
 import {
   LayoutDashboard,
   Users,
@@ -17,8 +19,8 @@ export default function AdminNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    safeStorage.removeItem("token");
+    safeStorage.removeItem("user");
     navigate("/"); // Redirect to login
   };
 

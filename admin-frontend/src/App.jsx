@@ -6,10 +6,10 @@ import StudentList from "./pages/StudentList";
 import ExamList from "./pages/ExamList";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
-
+import { safeStorage } from "./safeStorage";  
 export default function App() {
   // Check login state — if a token exists in localStorage
-  const isLoggedIn = !!localStorage.getItem("token");
+  const isLoggedIn = !!safeStorage.getItem("token");
 
   return (
     <BrowserRouter>

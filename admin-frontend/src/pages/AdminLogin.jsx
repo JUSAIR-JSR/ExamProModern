@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, ShieldCheck, LogIn } from "lucide-react";
 import API from "../api";
+import { safeStorage } from "../safeStorage";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -21,8 +22,8 @@ export default function AdminLogin() {
         return;
       }
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data));
+      safeStorage.setItem("token", res.data.token);
+      safeStorage.setItem("user", JSON.stringify(res.data));
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");

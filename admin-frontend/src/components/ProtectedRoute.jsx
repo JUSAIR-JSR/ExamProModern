@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
+import { safeStorage } from "../safeStorage";
 
 export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const token = safeStorage.getItem("token");
+  const user = JSON.parse(safeStorage.getItem("user") || "{}");
 
   if (!token || user.role !== "admin") {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UserPlus, Mail, Lock, CheckCircle, XCircle } from "lucide-react";
 import API from "../api";
+import { safeStorage } from "../safeStorage";
 
 export default function CreateTeacher({ onTeacherCreated }) {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -17,7 +18,7 @@ export default function CreateTeacher({ onTeacherCreated }) {
     setStatus({ type: "", message: "" });
 
     try {
-      const token = localStorage.getItem("token");
+      const token = safeStorage.getItem("token");
       const res = await API.post("/admin/create-teacher", form, {
         headers: { Authorization: `Bearer ${token}` },
       });

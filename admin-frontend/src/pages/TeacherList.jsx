@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Trash2, Users } from "lucide-react";
 import API from "../api";
 import CreateTeacher from "./CreateTeacher";
+import { safeStorage } from "../safeStorage";
 
 export default function TeacherList() {
   const [teachers, setTeachers] = useState([]);
@@ -11,7 +12,7 @@ export default function TeacherList() {
   const fetchTeachers = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
+      const token = safeStorage.getItem("token");
       const res = await API.get("/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -30,7 +31,7 @@ export default function TeacherList() {
   const handleDelete = async (id) => {
     if (!confirm("🗑️ Are you sure you want to delete this teacher?")) return;
     try {
-      const token = localStorage.getItem("token");
+      const token = safeStorage.getItem("token");
       await API.delete(`/admin/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
