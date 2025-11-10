@@ -10,43 +10,45 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 dotenv.config();
-
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 connectDB();
 
-// ✅ Explicit CORS setup
+// ✅ Define allowed origins
 const allowedOrigins = [
   "https://exampromodern-student.onrender.com",
   "https://exampromodern-teacher.onrender.com",
   "https://exampromodern-admin.onrender.com",
   "https://exampromodern-backend-pj8p.onrender.com",
-  "http://localhost:5173",
-  "http://localhost:3000",
+  "http://localhost:5173", // student dev
+  "http://localhost:5174", // admin dev
+  "http://localhost:5175", // teacher dev
+  "http://localhost:5000",
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("❌ Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept",
-    ],
-  })
-);
-app.options("*", cors()); // ✅ handle preflight
+// ✅ Apply CORS with full preflight support
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    // ✅ This ensures browsers receive CORS headers before any route
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
