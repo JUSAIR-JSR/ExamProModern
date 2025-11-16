@@ -21,7 +21,8 @@ export default function AdminNavbar() {
   const handleLogout = () => {
     safeStorage.removeItem("token");
     safeStorage.removeItem("user");
-    navigate("/"); // Redirect to login
+      navigate("/", { replace: true });
+ // Redirect to login
   };
 
   return (

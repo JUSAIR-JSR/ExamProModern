@@ -24,7 +24,7 @@ export default function AdminLogin() {
 
       safeStorage.setItem("token", res.data.token);
       safeStorage.setItem("user", JSON.stringify(res.data));
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     } finally {

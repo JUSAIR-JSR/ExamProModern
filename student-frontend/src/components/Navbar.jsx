@@ -25,7 +25,7 @@ export default function Navbar() {
     if (confirm("Are you sure you want to logout?")) {
       safeStorage.removeItem("token");
       safeStorage.removeItem("user");
-      navigate("/login");
+        navigate("/login", { replace: true });
     }
   };
 

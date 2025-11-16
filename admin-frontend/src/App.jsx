@@ -5,23 +5,32 @@ import TeacherList from "./pages/TeacherList";
 import StudentList from "./pages/StudentList";
 import ExamList from "./pages/ExamList";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute"; // <-- ADD THIS
 import Navbar from "./components/Navbar";
-import { safeStorage } from "./safeStorage";  
+import { safeStorage } from "./safeStorage";
+
 export default function App() {
-  // Check login state — if a token exists in localStorage
   const isLoggedIn = !!safeStorage.getItem("token");
 
   return (
     <BrowserRouter>
-      {/* ✅ Show Navbar only if logged in */}
+      {/* Show Navbar only after login */}
       {isLoggedIn && <Navbar />}
 
       <div className="p-6">
         <Routes>
-          {/* 🔑 Public Route */}
-          <Route path="/" element={<AdminLogin />} />
 
-          {/* 🔒 Protected Routes */}
+          {/* 👇 PUBLIC LOGIN ROUTE */}
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <AdminLogin />
+              </PublicRoute>
+            }
+          />
+
+          {/* 👇 PROTECTED ROUTES */}
           <Route
             path="/dashboard"
             element={
