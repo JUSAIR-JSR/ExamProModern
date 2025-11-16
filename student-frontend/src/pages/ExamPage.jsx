@@ -15,6 +15,8 @@ export default function ExamPage() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
+  const [showTracker, setShowTracker] = useState(false); // 📌 NEW
+
   const shuffleArray = (array) => {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -103,11 +105,43 @@ export default function ExamPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-6">
-      {/* Sidebar */}
+
+      {/* 📱 Mobile Toggle Button */}
+      <div className="md:hidden mb-2 flex justify-between items-center bg-white p-3 rounded-xl shadow">
+        <h3 className="text-lg font-bold text-green-700">Question Tracker</h3>
+        <button
+          onClick={() => setShowTracker(!showTracker)}
+          className="p-2 rounded-lg border bg-gray-100"
+        >
+          {/* Hamburger Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* 📌 Sidebar (Tracker) */}
       <motion.div
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="md:w-1/4 bg-white shadow-md rounded-2xl p-4 h-fit sticky top-4"
+        className={`
+          bg-white shadow-md rounded-2xl p-4 h-fit 
+          md:w-1/4 md:sticky md:top-4
+          
+          ${showTracker ? "block" : "hidden"} 
+          md:block
+        `}
       >
         <h3 className="text-lg font-bold text-green-700 mb-3 text-center">
           Question Tracker
@@ -119,7 +153,10 @@ export default function ExamPage() {
             return (
               <button
                 key={i}
-                onClick={() => setCurrentIndex(i)}
+                onClick={() => {
+                  setCurrentIndex(i);
+                  setShowTracker(false); // 📌 Auto-close on mobile
+                }}
                 className={`w-9 h-9 rounded-full font-semibold transition-all ${
                   currentIndex === i
                     ? "ring-2 ring-blue-500 bg-blue-100 text-blue-600"
