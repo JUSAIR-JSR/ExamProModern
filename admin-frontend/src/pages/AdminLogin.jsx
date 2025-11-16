@@ -14,14 +14,11 @@ export default function AdminLogin() {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   /* ========================================
-      GOOGLE SCRIPT LOADER
+      LOAD GOOGLE SCRIPT
   ========================================= */
   useEffect(() => {
     const scriptId = "google-auth";
-    if (document.getElementById(scriptId)) {
-      renderGoogleButton();
-      return;
-    }
+    if (document.getElementById(scriptId)) return;
 
     const script = document.createElement("script");
     script.id = scriptId;
@@ -29,39 +26,30 @@ export default function AdminLogin() {
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
-
-    script.onload = () => renderGoogleButton();
   }, []);
 
   /* ========================================
-      RENDER GOOGLE BUTTON
+      GOOGLE POPUP LOGIN
   ========================================= */
-  const renderGoogleButton = () => {
-    if (window.google && GOOGLE_CLIENT_ID) {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleLogin,
-      });
-
-      window.google.accounts.id.renderButton(
-        document.getElementById("googleLoginDiv"),
-        {
-          theme: "filled_blue",
-          size: "large",
-          width: "300",
-        }
-      );
+  const triggerGooglePopup = () => {
+    if (!window.google) {
+      return alert("Google login is loading... try again.");
     }
+
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleLogin,
+    });
+
+    window.google.accounts.id.prompt(); // opens Google popup
   };
 
   /* ========================================
-      HANDLE GOOGLE RESPONSE
+      GOOGLE LOGIN RESPONSE
   ========================================= */
   const handleGoogleLogin = async (response) => {
     try {
-      const res = await adminGoogleLogin({
-        credential: response.credential,
-      });
+      const res = await adminGoogleLogin({ credential: response.credential });
 
       safeStorage.setItem("token", res.data.token);
       safeStorage.setItem("user", JSON.stringify(res.data));
@@ -73,7 +61,7 @@ export default function AdminLogin() {
   };
 
   /* ========================================
-      NORMAL EMAIL/PASSWORD LOGIN
+      NORMAL LOGIN
   ========================================= */
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -88,6 +76,7 @@ export default function AdminLogin() {
 
       safeStorage.setItem("token", res.data.token);
       safeStorage.setItem("user", JSON.stringify(res.data));
+
       navigate("/dashboard", { replace: true });
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -96,9 +85,6 @@ export default function AdminLogin() {
     }
   };
 
-  /* ========================================
-      UI
-  ========================================= */
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-white to-blue-50 px-4">
       <motion.div
@@ -125,7 +111,6 @@ export default function AdminLogin() {
 
         {/* Login Form */}
         <form onSubmit={handleLogin} className="space-y-4">
-          {/* Email */}
           <div className="relative">
             <Mail size={18} className="absolute left-3 top-3 text-gray-400" />
             <input
@@ -133,12 +118,11 @@ export default function AdminLogin() {
               placeholder="Admin Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+              className="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2"
               required
             />
           </div>
 
-          {/* Password */}
           <div className="relative">
             <Lock size={18} className="absolute left-3 top-3 text-gray-400" />
             <input
@@ -146,33 +130,37 @@ export default function AdminLogin() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+              className="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2"
               required
             />
           </div>
 
-          {/* Login Button */}
           <motion.button
             whileTap={{ scale: 0.97 }}
             disabled={loading}
             type="submit"
-            className={`w-full py-2 rounded-lg text-white font-semibold flex items-center justify-center gap-2 transition ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 shadow-md"
-            }`}
+            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
           >
             <LogIn size={18} />
             {loading ? "Logging in..." : "Login"}
           </motion.button>
         </form>
 
-        {/* Google Login */}
-        <div className="my-5 flex justify-center">
-          <div id="googleLoginDiv"></div>
-        </div>
+        {/* Custom Google Button */}
+        <button
+          onClick={triggerGooglePopup}
+          className="w-full mt-5 flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 bg-white hover:bg-gray-100 transition"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+            className="w-5 h-5"
+          />
+          <span className="text-gray-700 font-medium">
+            Sign in with Google
+          </span>
+        </button>
 
-        {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-6">
           © {new Date().getFullYear()} ExamPro Admin Panel • Secure Access
         </p>
