@@ -12,6 +12,9 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  // console.log(import.meta.env);
+
+// console.log("Google Client ID =", GOOGLE_CLIENT_ID);
 
   /* ========================================
       LOAD GOOGLE SCRIPT
@@ -31,18 +34,26 @@ export default function AdminLogin() {
   /* ========================================
       GOOGLE POPUP LOGIN
   ========================================= */
-  const triggerGooglePopup = () => {
-    if (!window.google) {
-      return alert("Google login is loading... try again.");
-    }
+const triggerGooglePopup = () => {
+  if (!window.google) {
+    alert("Google login not ready yet.");
+    return;
+  }
+  // console.log("GOOGLE_CLIENT_ID =", GOOGLE_CLIENT_ID);
+  if (!GOOGLE_CLIENT_ID) {
+    alert("Google Client ID missing!");
+    return;
+  }
 
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleLogin,
-    });
 
-    window.google.accounts.id.prompt(); // opens Google popup
-  };
+  window.google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleLogin,
+  });
+
+  window.google.accounts.id.prompt();
+};
+
 
   /* ========================================
       GOOGLE LOGIN RESPONSE

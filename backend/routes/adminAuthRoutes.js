@@ -1,8 +1,8 @@
 import express from "express";
-import { adminGoogleLogin } from "../controllers/adminGoogleController.js";
+import { googleAdminLogin } from "../controllers/adminGoogleController.js";
 
 const router = express.Router();
 
-router.post("/google-login", adminGoogleLogin);
+router.post("/google", googleAdminLogin);
 
 export default router;

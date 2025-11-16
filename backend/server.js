@@ -58,7 +58,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/exams", examRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/responses", responseRoutes);
-app.use("/api/admin", adminGoogleRoutes);
+app.use("/api/auth", adminGoogleRoutes);  // better folder structure
 
 
 const PORT = process.env.PORT || 5000;

@@ -1,14 +1,20 @@
 import { OAuth2Client } from "google-auth-library";
+import User from "../models/User.js";  // ✅ use your existing User model
 import jwt from "jsonwebtoken";
-import Admin from "../models/adminModel.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-export const adminGoogleLogin = async (req, res) => {
+export const googleAdminLogin = async (req, res) => {
   try {
     const { credential } = req.body;
 
-    // 1. Verify Google JWT token
+    if (!credential) {
+      return res.status(400).json({ message: "No credential token provided" });
+    }
+
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -17,25 +23,23 @@ export const adminGoogleLogin = async (req, res) => {
     const payload = ticket.getPayload();
     const email = payload.email;
 
-    // 2. Only allow selected admins
-    const allowedAdmins = process.env.ADMIN_GOOGLE_EMAILS
-      .split(",")
-      .map((e) => e.trim());
+    // ✔ Allowed admins list
+    const allowed = process.env.ADMIN_GOOGLE_EMAILS.split(",").map((e) => e.trim());
 
-    if (!allowedAdmins.includes(email)) {
-      return res.status(403).json({ message: "Unauthorized admin email" });
+    if (!allowed.includes(email)) {
+      return res.status(403).json({ message: "Not authorized admin" });
     }
 
-    // 3. Find admin in DB
-    let admin = await Admin.findOne({ email });
+    // ✔ Find admin in User collection
+    let admin = await User.findOne({ email, role: "admin" });
 
     if (!admin) {
       return res.status(401).json({
-        message: "Admin account does not exist in system",
+        message: "Admin account not found. Add admin manually in database.",
       });
     }
 
-    // 4. Generate token
+    // ✔ Generate JWT
     const token = jwt.sign(
       { id: admin._id, role: "admin" },
       process.env.JWT_SECRET,
@@ -43,15 +47,14 @@ export const adminGoogleLogin = async (req, res) => {
     );
 
     res.json({
-      message: "Google Admin login successful",
       token,
       role: "admin",
       email,
-      name: payload.name,
+      name: admin.name,
+      message: "Admin login successful",
     });
-
-  } catch (error) {
-    console.log("GOOGLE LOGIN ERROR", error);
+  } catch (err) {
+    console.error("Google Admin Login Error:", err);
     res.status(500).json({ message: "Google authentication failed" });
   }
 };
