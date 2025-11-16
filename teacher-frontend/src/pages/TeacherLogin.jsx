@@ -35,7 +35,7 @@ export default function TeacherLogin() {
       }
       safeStorage.setItem("token", res.data.token);
       safeStorage.setItem("user", JSON.stringify(res.data));
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (err) {
       alert(err.response?.data?.message || "Invalid credentials");
     } finally {

@@ -5,13 +5,11 @@ import AddQuestion from "./pages/AddQuestion";
 import TeacherLogin from "./pages/TeacherLogin";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute"; // ✅ ADD THIS
 
 function Layout({ children }) {
   const location = useLocation();
-
-  // ✅ Hide Navbar only on the login page
   const hideNavbar = location.pathname === "/login";
-
   return (
     <>
       {!hideNavbar && <Navbar />}
@@ -25,10 +23,18 @@ export default function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          {/* 🔐 Login route */}
-          <Route path="/login" element={<TeacherLogin />} />
 
-          {/* 🔐 Protected routes */}
+          {/* 👇 LOGIN route should use PUBLIC ROUTE */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <TeacherLogin />
+              </PublicRoute>
+            }
+          />
+
+          {/* PROTECTED ROUTES */}
           <Route
             path="/"
             element={
