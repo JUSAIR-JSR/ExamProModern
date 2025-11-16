@@ -60,8 +60,7 @@ const triggerGooglePopup = () => {
   ========================================= */
   const handleGoogleLogin = async (response) => {
     try {
-      const res = await adminGoogleLogin({ credential: response.credential });
-
+      const res = await adminGoogleLogin({credential: response.credential,});
       safeStorage.setItem("token", res.data.token);
       safeStorage.setItem("user", JSON.stringify(res.data));
 

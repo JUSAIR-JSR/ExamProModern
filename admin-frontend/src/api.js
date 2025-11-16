@@ -13,6 +13,6 @@ API.interceptors.request.use((config) => {
 });
 
 export const adminGoogleLogin = (data) =>
-  API.post("/admin/google-login", data);
+  API.post("/admin/google", data);
 
 export default API;
