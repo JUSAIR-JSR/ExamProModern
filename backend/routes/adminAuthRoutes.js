@@ -3,6 +3,7 @@ import { googleAdminLogin } from "../controllers/adminGoogleController.js";
 
 const router = express.Router();
 
-router.post("/google", googleAdminLogin);
+// final URL = /api/admin/google-login
+router.post("/google-login", googleAdminLogin);
 
 export default router;
