@@ -25,8 +25,8 @@ export default function StudentLogin() {
       // ✅ Safe localStorage access
       safeStorage.setItem("token", res.data.token);
       safeStorage.setItem("user", JSON.stringify(res.data));
+      navigate("/", { replace: true });
 
-      navigate("/");
     } catch (err) {
       alert("Invalid credentials. Please try again.");
     } finally {

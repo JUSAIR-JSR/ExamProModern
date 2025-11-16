@@ -4,9 +4,10 @@ import ExamList from "./pages/ExamList";
 import ExamPage from "./pages/ExamPage";
 import ResultPage from "./pages/ResultPage";
 import StudentLogin from "./pages/StudentLogin";
-import ProtectedRoute from "./components/ProtectedRoute";
 import StudentRegister from "./pages/StudentRegister";
-import Profile from "./pages/Profile"; // ✅ import added
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute"; // ✅ import added
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -15,10 +16,25 @@ export default function App() {
 
       <div className="p-6">
         <Routes>
-          <Route path="/login" element={<StudentLogin />} />
-          <Route path="/register" element={<StudentRegister />} />
+          {/* 🚪 Public (only for non-logged-in users) */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <StudentLogin />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <StudentRegister />
+              </PublicRoute>
+            }
+          />
 
-          {/* Protected Routes */}
+          {/* 🔒 Protected Routes */}
           <Route
             path="/"
             element={
@@ -43,7 +59,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          {/* ✅ New Profile Route */}
           <Route
             path="/profile"
             element={
