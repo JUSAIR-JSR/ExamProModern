@@ -6,7 +6,6 @@ import examRoutes from "./routes/examRoutes.js";
 import responseRoutes from "./routes/responseRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import adminGoogleRoutes from "./routes/adminAuthRoutes.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -58,7 +57,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/exams", examRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/responses", responseRoutes);
-app.use("/api/admin", adminGoogleRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 const PORT = process.env.PORT || 5000;

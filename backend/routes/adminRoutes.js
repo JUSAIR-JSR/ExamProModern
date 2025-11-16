@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/User.js";
 import Exam from "../models/Exam.js";
 import { protect, requireRole } from "../middleware/auth.js";
+import { adminGoogleLogin } from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -68,5 +69,8 @@ router.post("/create-teacher", protect, requireRole(["admin"]), async (req, res)
     res.status(500).json({ message: "Failed to create teacher", error: error.message });
   }
 });
+
+router.post("/google-login", adminGoogleLogin);
+
 
 export default router;
