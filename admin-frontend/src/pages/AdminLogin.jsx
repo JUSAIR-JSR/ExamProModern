@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, ShieldCheck, LogIn } from "lucide-react";
-import API from "../api";
+import API, { adminGoogleLogin } from "../api";
 import { safeStorage } from "../safeStorage";
 
 export default function AdminLogin() {
@@ -11,6 +11,70 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  /* ========================================
+      GOOGLE SCRIPT LOADER
+  ========================================= */
+  useEffect(() => {
+    const scriptId = "google-auth";
+    if (document.getElementById(scriptId)) {
+      renderGoogleButton();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    script.onload = () => renderGoogleButton();
+  }, []);
+
+  /* ========================================
+      RENDER GOOGLE BUTTON
+  ========================================= */
+  const renderGoogleButton = () => {
+    if (window.google && GOOGLE_CLIENT_ID) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleLogin,
+      });
+
+      window.google.accounts.id.renderButton(
+        document.getElementById("googleLoginDiv"),
+        {
+          theme: "filled_blue",
+          size: "large",
+          width: "300",
+        }
+      );
+    }
+  };
+
+  /* ========================================
+      HANDLE GOOGLE RESPONSE
+  ========================================= */
+  const handleGoogleLogin = async (response) => {
+    try {
+      const res = await adminGoogleLogin({
+        credential: response.credential,
+      });
+
+      safeStorage.setItem("token", res.data.token);
+      safeStorage.setItem("user", JSON.stringify(res.data));
+
+      navigate("/dashboard", { replace: true });
+    } catch (err) {
+      alert(err.response?.data?.message || "Google Login Failed");
+    }
+  };
+
+  /* ========================================
+      NORMAL EMAIL/PASSWORD LOGIN
+  ========================================= */
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -32,6 +96,9 @@ export default function AdminLogin() {
     }
   };
 
+  /* ========================================
+      UI
+  ========================================= */
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-white to-blue-50 px-4">
       <motion.div
@@ -56,7 +123,7 @@ export default function AdminLogin() {
           </p>
         </div>
 
-        {/* Form */}
+        {/* Login Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           {/* Email */}
           <div className="relative">
@@ -84,7 +151,7 @@ export default function AdminLogin() {
             />
           </div>
 
-          {/* Submit Button */}
+          {/* Login Button */}
           <motion.button
             whileTap={{ scale: 0.97 }}
             disabled={loading}
@@ -99,6 +166,11 @@ export default function AdminLogin() {
             {loading ? "Logging in..." : "Login"}
           </motion.button>
         </form>
+
+        {/* Google Login */}
+        <div className="my-5 flex justify-center">
+          <div id="googleLoginDiv"></div>
+        </div>
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-6">
