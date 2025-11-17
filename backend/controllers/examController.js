@@ -32,10 +32,11 @@ export const getExams = async (req, res) => {
 export const addExam = async (req, res) => {
   try {
     console.log("User from token:", req.user); // 👈 debug
-    const { title, duration, totalMarks } = req.body;
+    const { title,description, duration, totalMarks } = req.body;
 
     const exam = await Exam.create({
       title,
+      description,   
       duration,
       totalMarks,
       teacher: req.user.id,
@@ -48,7 +49,30 @@ export const addExam = async (req, res) => {
   }
 };
 
+export const updateExam=async (req, res) => {
+  try {
+    const { title, description, duration, totalMarks } = req.body;
 
+    const exam = await Exam.findById(req.params.id);
+
+    if (!exam)
+      return res.status(404).json({ message: "Exam not found" });
+
+    if (exam.teacher.toString() !== req.user.id)
+      return res.status(403).json({ message: "Unauthorized" });
+
+    exam.title = title;
+    exam.description = description;
+    exam.duration = duration;
+    exam.totalMarks = totalMarks;
+
+    await exam.save();
+
+    res.json(exam);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update exam" });
+  }
+} 
 
 // ✅ Delete exam + related questions
 export const deleteExam = async (req, res) => {

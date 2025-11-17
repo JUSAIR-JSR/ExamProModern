@@ -10,6 +10,7 @@ import {
   addQuestion,
   updateQuestion,
   deleteQuestion,
+  updateExam
 } from "../controllers/examController.js";
 import { protect, requireRole } from "../middleware/auth.js";
 
@@ -37,6 +38,9 @@ router.get("/", protect, getExams);
 // ✅ Only teachers can create exams
 router.post("/", protect, requireRole(["teacher"]), addExam);
 
+// UPDATE exam
+router.put("/:id", protect, requireRole(["teacher"]), updateExam);
+
 // ✅ Only teachers or admin can delete an exam
 router.delete("/:id", protect, requireRole(["teacher", "admin"]), deleteExam);
 
@@ -49,5 +53,10 @@ router.put("/questions/:id", protect, requireRole(["teacher"]), upload.single("i
 
 // ✅ Only teachers or admin can delete a question
 router.delete("/questions/:id", protect, requireRole(["teacher", "admin"]), deleteQuestion);
+
+
+
+
+
 
 export default router;
