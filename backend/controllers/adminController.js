@@ -1,4 +1,5 @@
 import Admin from "../models/Admin.js";
+import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 
@@ -8,31 +9,23 @@ export const adminGoogleLogin = async (req, res) => {
   try {
     const { credential } = req.body;
 
-    if (!credential) {
-      return res.status(400).json({ message: "No credential received" });
-    }
-
-    // Verify Google token
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
-    const email = payload.email;
-    const googleId = payload.sub;
-    const name = payload.name;
+    const { email, sub: googleId, name } = payload;
 
-    // Allowed admin emails
+    // Allow only emails listed in env
     const allowed = process.env.ADMIN_GOOGLE_EMAILS.split(",");
-
     if (!allowed.includes(email)) {
-      return res.status(403).json({
-        message: "This Google email is not authorized for admin access.",
-      });
+      return res.status(403).json({ message: "This email is not allowed for admin login" });
     }
 
-    // Find or create admin
+    // ------------------------------
+    // 1️⃣ Ensure admin exists in Admin table
+    // ------------------------------
     let admin = await Admin.findOne({ email });
 
     if (!admin) {
@@ -40,17 +33,29 @@ export const adminGoogleLogin = async (req, res) => {
         name,
         email,
         googleId,
-        role: "admin",
+        role: "admin"
       });
-    } else {
-      admin.googleId = googleId;
-      admin.name = name;
-      await admin.save();
     }
 
-    // Generate JWT
+    // ------------------------------
+    // 2️⃣ Ensure same admin exists in User table (IMPORTANT)
+    // ------------------------------
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        password: "GOOGLE_LOGIN",
+        role: "admin",  // important
+      });
+    }
+
+    // ------------------------------
+    // 3️⃣ JWT Token (use User's ID)
+    // ------------------------------
     const token = jwt.sign(
-      { id: admin._id, role: "admin" },
+      { id: user._id, role: "admin" },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -59,15 +64,15 @@ export const adminGoogleLogin = async (req, res) => {
       message: "Google login successful",
       token,
       admin: {
-        id: admin._id,
-        name: admin.name,
-        email: admin.email,
-        role: admin.role,
-      },
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: "admin",
+      }
     });
 
-  } catch (error) {
-    console.error("Google Login Error:", error);
+  } catch (err) {
+    console.error("Google Login Error:", err);
     return res.status(500).json({ message: "Google login failed" });
   }
 };
