@@ -2,8 +2,7 @@ import axios from "axios";
 import { safeStorage } from "./safeStorage";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-  // baseURL: "https://exampromodern-backend-pj8p.onrender.com/api",
+  baseURL: "https://exampromodern-backend-pj8p.onrender.com/api",
 });
 
 // Attach token
